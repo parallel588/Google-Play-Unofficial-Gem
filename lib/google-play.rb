@@ -7,11 +7,13 @@ require 'google-play-class.rb'
 module GooglePlay
   def self.search(query,type,page)
   	results = Array.new
-  	doc = Nokogiri::HTML(open("https://play.google.com/store/search?q=#{URI.escape(query)}&c=#{URI.escape(type)}"))
+  	_doc = open("https://play.google.com/store/search?q=#{URI.escape(query)}&c=#{URI.escape(type)}")
+  	doc = Nokogiri::HTML(_doc.read)
 		doc.css('ul.search-results-list li.search-results-item').each{ |list|
 			results << SearchResult.new(query,type,list)
 		}
-		return results
+	_doc = nil	
+	return results
   end
   def self.info(id,type)
 		doc = Nokogiri::HTML(open("https://play.google.com/store/#{URI.escape(type)}/details?id=#{URI.escape(id)}"))
